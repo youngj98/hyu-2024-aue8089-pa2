@@ -28,7 +28,9 @@ In this exercise, the rotation $R$ from the world frame to the camera frame is g
 
 $$ R=I+(\text{sin}~\theta)[k]_\times +(1-\text{cos}~\theta)[k]_\times^2$$
 
-where $[k]_{\times}=\begin{bmatrix} 0 & -k_z & k_y \newline k_z & 0 & -k_x \newline -k_y & k_x & 0 \end{bmatrix}$ is the cross-product matrix for the vector $k$.
+$$[k]_\times = \begin{bmatrix} 0 & -k_z & k_y \newline k_z & 0 & -k_x \newline -k_y & k_x & 0 \end{bmatrix}$$
+
+where $[k]_\times$ is the cross-product matrix for the vector $k$.
 
 
 ### Drawing the cube
@@ -50,6 +52,7 @@ $$\lambda\begin{bmatrix}u \newline v \newline 1 \end{bmatrix}=K[R|t]\begin{bmatr
 - Next, we apply lens distortion to $p$ to get the distorted pixel coordinates $p_d = (u_d, v_d)^T$:
 
 $$\begin{bmatrix}u_d \newline v_d \end{bmatrix}=(1+k_1r^2+k_2r^4)\begin{bmatrix}u-u_0 \newline v-v_0\end{bmatrix} \begin{bmatrix}u_0 \newline v_0 \end{bmatrix} $$
+
 where $r^2=(u-u_0)^2+(v-v_0)^2$ is the radial component of $p$ and the values $u_0$ and $v_0$ denote the optical center (derived from the calibration matrix $K$).
 
 
@@ -62,7 +65,7 @@ where $\Gamma(u,v)=(u', v')$ is the distortion function that maps undistorted pi
 <center> <img src="docs/figure2.png" width="60%"> </center>
 
 
-However, due to the undistorted pixel locations being non-integer, the resulting image would have some artifacts. Moreover, inverting the distortion function $\Gamma$ amounts to solving a system of polynomial system of equations, which is costly. In image processing, this is commonly solved by doing backward warping, i.e. warping pixel locations from the destination image ( undistorted image in our case) to the source image (distorted image in our case):
+However, due to the undistorted pixel locations being non-integer, the resulting image would have some artifacts. Moreover, inverting the distortion function $\Gamma$ amounts to solving a system of polynomial system of equations, which is costly. In image processing, this is commonly solved by doing backward warping, i.e. warping pixel locations from the destination image (undistorted image in our case) to the source image (distorted image in our case):
 $$I_u(u, v) = I_d(\Gamma(u, v))$$
 
 
