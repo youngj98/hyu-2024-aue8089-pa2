@@ -37,6 +37,7 @@ def undistort_image(img: np.ndarray,
                 continue
 
             if bilinear_interpolation:
+                # [TODO] weighted sum of pixel values in img
                 a = u - u1
                 b = v - v1
                 pixel_LU = img[v1, u1]
@@ -52,8 +53,6 @@ def undistort_image(img: np.ndarray,
                 weighted_pixel = weight_LU * pixel_LU + weight_RU * pixel_RU + weight_LD * pixel_LD + weight_RD * pixel_RD
                 
                 undistorted_img[y, x] = weighted_pixel
-
-                # [TODO] weighted sum of pixel values in img
 
             else:
                 # [TODO] nearest neighbor
