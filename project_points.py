@@ -20,9 +20,13 @@ def project_points(points_3d: np.ndarray,
     """
 
     # [TODO] get image coordinates
-
+    
+    points_3d = points_3d.T     # (N,3) -> (3,N)
+    homogenous_points = np.dot(K, points_3d)    # (3,3)*(3,N) -> (3,N)
+    image_points = homogenous_points[:2, :] / homogenous_points[2, :]   # z좌표로 정규화 (2,N)
+    image_points = image_points.T   # (2,N) -> (N,2)
 
     # [TODO] apply distortion
-
+    projected_points = distort_points(image_points, D, K)
 
     return projected_points

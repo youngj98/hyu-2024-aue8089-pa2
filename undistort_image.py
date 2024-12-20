@@ -30,20 +30,45 @@ def undistort_image(img: np.ndarray,
 
             # bilinear interpolation
             u1 = math.floor(u)
-            v1 = math.floor(v)
+            v1 = math.floor(v)      # 왼쪽 위 (u1,v1), 오른쪽 위 (u1+1, v1), 왼쪽 아래 (u1, v1+1), 오른쪽 아래 (u1+1, v1+1)
 
-            in_image = (u1 >= 0) & (u1+1 < width) & (v1 >= 0) & (v1+1 < height)
+            in_image = (u1 >= 0) & (u1+1 < width) & (v1 >= 0) & (v1+1 < height) # 점이 이미지 내에 있는지 확인
             if not in_image:
                 continue
 
             if bilinear_interpolation:
                 a = u - u1
                 b = v - v1
+                pixel_LU = img[v1, u1]
+                pixel_RU = img[v1, u1 + 1]
+                pixel_LD = img[v1 + 1, u1]
+                pixel_RD = img[v1 + 1, u1 + 1]
+                
+                weight_LU = (1 - a) * (1 - b)
+                weight_RU = a * (1 - b)
+                weight_LD = (1 - a) * b
+                weight_RD = a * b
+                
+                weighted_pixel = weight_LU * pixel_LU + weight_RU * pixel_RU + weight_LD * pixel_LD + weight_RD * pixel_RD
+                
+                undistorted_img[y, x] = weighted_pixel
 
                 # [TODO] weighted sum of pixel values in img
 
             else:
                 # [TODO] nearest neighbor
+                a = u - u1
+                b = v - v1
+                if (a >= 0.5 and b >= 0.5):
+                    pixel_near = img[v1 + 1, u1 + 1]
+                elif (a >= 0.5 and b < 0.5):
+                    pixel_near = img[v1, u1 + 1]
+                elif (a < 0.5 and b >= 0.5):
+                    pixel_near = img[v1 + 1, u1]
+                else:
+                    pixel_near = img[v1, u1]
+                
+                undistorted_img[y, x] = pixel_near
 
 
     return undistorted_img
